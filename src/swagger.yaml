@@ -1,0 +1,527 @@
+swagger: "2.0"
+info:
+  description: "All api"
+  version: "1.0.0"
+  title: "List server api"
+  termOfService: ""
+  contact:
+    email: ""
+  license:
+    name: "MIT"
+    url: "https://opensource.org/licenses/MIT"
+# host: "171.244.8.108:8000/"
+host: "localhost:8089/"
+basePath: "api/v1/"
+tags:
+  - name: "auth"
+    description: "API xác thực thông tin"
+  - name: "users"
+    description: "API quản lý người dùng"
+  - name: "summary"
+    description: "API quản lý summary"
+  - name: "sectioncv"
+    description: "API thêm cv"
+schema:
+  - "http"
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+paths:
+  /auth:
+    post:
+      tags:
+        - "auth"
+      summary: "Đăng nhập và lấy token"
+      description: "Nhập email và mật khẩu"
+      operationId: "login"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Nhập thông tin email và mật khẩu"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginDto"
+      responses:
+        "400":
+          description: "Invalid input"
+    get:
+      tags:
+        - "auth"
+      summary: "Lấy thông tin người đang đăng nhập"
+      description: "Thông tin người đang đăng nhập"
+      operationId: "getCurrentLoginUser"
+      consumes:
+        - "Authorization"
+      produce:
+        - "Authorization"
+      parameters:
+        - in: "header"
+          name: "Authorization"
+          description: "Token người dùng đang đăng nhập"
+      responses:
+        "400":
+          description: "Invalid input"
+  /auth/refresh-token:
+    post:
+      tags:
+        - "auth"
+      summary: "Làm mới token của người dùng đang đang nhập"
+      description: "Nhập mã làm mới token"
+      operationId: "refresh token"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Làm mới token đang đăng nhập"
+          required: true
+          schema:
+            $ref: "#/definitions/RefreshToken"
+      responses:
+        "400":
+          description: "Invalid input"
+  /users:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "users"
+      summary: "Lấy tất cả người dùng"
+      description: "Lấy tất cả người dùng"
+      operationId: "getAllUser"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      responses:
+        "400":
+          description: "No data"
+    post:
+      tags:
+        - "users"
+      summary: "Đăng ký tài khoản"
+      description: "Nhập thông tin người dùng muốn đăng ký tài khoản"
+      operationId: "register"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Nhập thông tin người dùng muốn đăng ký tài khoản"
+          required: true
+          schema:
+            $ref: "#/definitions/UserDto"
+      responses:
+        "400":
+          description: "Invalid input"
+  /users/paging/{page}:
+    get:
+      tags:
+        - "users"
+      summary: "Lấy người dùng và phân trang"
+      description: "Lấy người dùng và phân trang"
+      operationId: "getAllPaging"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "header"
+          name: "Authorization"
+          description: "Token tài khoản đang đăng nhập"
+        - in: "path"
+          name: "page"
+          description: "Trang số"
+          required: true
+        - in: "query"
+          name: "keyword"
+          description: "Điều kiện tìm kiếm"
+      responses:
+        "400":
+          description: "No data"
+  /users/{id}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "users"
+      summary: "Lấy thông tin người dùng theo Id người dùng"
+      description: "Lấy thông tin người dùng theo Id người dùng"
+      operationId: "getUserById"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Id của user muốn lấy thông tin"
+          required: true
+      responses:
+        "400":
+          description: "No data"
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - "users"
+      summary: "Cập nhật thông tin người dùng"
+      description: "Cập nhật thông tin người dùng"
+      operationId: "updateUser"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Id của người dùng muốn cập nhật thông tin"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Thông tin người dùng muốn chỉnh sửa"
+          required: true
+          schema:
+            $ref: "#/definitions/UserDto"
+      responses:
+        "400":
+          description: "No data"
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - "users"
+      summary: "Xóa thông tin người dùng theo Id người dùng"
+      description: "Xóa thông tin người dùng theo Id người dùng"
+      operationId: "deleteUser"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Id của user muốn xóa thông tin"
+          required: true
+      responses:
+        "400":
+          description: "No data"
+  /summary:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - "summary"
+      summary: "Danh sách summary"
+      description: "Danh sách summary"
+      operationId: "getAllSummary"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      responses:
+        "400":
+          description: "No data"
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - "summary"
+      summary: "Thêm mới summary"
+      description: "Thêm mới summary"
+      operationId: "craeteSummary"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Nhập thông tin người dùng muốn đăng ký tài khoản"
+          required: true
+          schema:
+            $ref: "#/definitions/SummaryDto"
+      responses:
+        "400":
+          description: "No data"
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - "summary"
+      summary: "Cập nhật summary"
+      description: "Cập nhật summary"
+      operationId: "updateSummary"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Thông summary muốn chỉnh sửa"
+          required: true
+          schema:
+            $ref: "#/definitions/SummaryDto"
+      responses:
+        "400":
+          description: "No data"
+  /sectioncv:
+    get:
+      tags:
+        - "sectioncv"
+      summary: "Danh sách CV"
+      description: "Danh sách CV"
+      operationId: "getAllSectionCV"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      responses:
+        "400":
+          description: "No data"
+    post:
+      tags:
+        - "sectioncv"
+      summary: "Thêm mới CV"
+      description: "Thêm mới CV"
+      operationId: "craeteSectionCV"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Nhập các trường thông tin"
+          required: true
+          schema:
+            $ref: "#/definitions/SectionCVDto"
+      responses:
+        "400":
+          description: "No data"
+  /sectioncv/{id}:
+    put:
+      tags:
+        - "sectioncv"
+      summary: "Cập nhật CV"
+      description: "Cập nhật CV"
+      operationId: "updateSectionCV"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Id của section cv"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Nhập các trường thông tin"
+          required: true
+          schema:
+            $ref: "#/definitions/SectionCVDto"
+      responses:
+        "400":
+          description: "No data"
+    delete:
+      tags:
+        - "sectioncv"
+      summary: "Xóa CV"
+      description: "Xóa CV"
+      operationId: "deleteSectionCV"
+      consumes:
+        - "application/json"
+      produce:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Id của section cv"
+          required: true
+      responses:
+        "400":
+          description: "No data"
+definitions:
+  LoginDto:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+  UserDto:
+    type: "object"
+    properties:
+      full_name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+      referral_code:
+        type: "string"
+  RefreshToken:
+    type: "object"
+    properties:
+      refreshToken:
+        type: "string"
+  SummaryDto:
+    type: "object"
+    properties:
+      technical_used:
+        type: array
+        items:
+          type: string
+      skills:
+        type: array
+        items:
+          type: string
+      summary:
+        type: array
+        items:
+          type: object
+          properties:
+            role:
+              type: string
+            levels:
+              type: array
+              items:
+                type: object
+                properties:
+                  level_name:
+                    type: string
+                  technicals:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        technical_name:
+                          type: string
+                        summary_list:
+                          type: array
+                          items:
+                            type: string
+  SectionCVDto:
+    type: "object"
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+      position:
+        type: string
+      status:
+        type: boolean
+      role:
+        type: array
+        items:
+          type: object
+          properties:
+            roleNm: 
+              type: string
+            level: 
+              type: string
+            technicals: 
+              type: string
+      technicalSummaryList:
+        type: array
+        items:
+          type: string
+      educationList:
+        type: array
+        items:
+          type: object
+          properties:
+            schoolNm: 
+              type: string
+            majorNm: 
+              type: string
+            classYear: 
+              type: string
+      certificateList:
+        type: array
+        items:
+          type: object
+          properties:
+            certificateNm: 
+              type: string
+            certificateYear: 
+              type: string
+      skills:
+        type: array
+        items:
+          type: object
+          properties:
+            skillNm: 
+              type: string
+            skillData: 
+              type: string
+            isSelected: 
+              type: boolean
+      professionalList:
+        type: array
+        items:
+          type: object
+          properties:
+            companyNm: 
+              type: string
+            locationNm: 
+              type: string
+            startDate: 
+              type: string
+            endDate: 
+              type: string
+            roleNm: 
+              type: string
+            responsibilities:
+              type: array
+              items:
+                type: string
+      highLightProjectList:
+        type: array
+        items:
+          type: object
+          properties:
+            projectNm: 
+              type: string
+            projectDescription: 
+              type: string
+            teamSize: 
+              type: string
+            position: 
+              type: string
+            responsibility:
+              type: array
+              items:
+                type: string
+            technologies:
+              type: array
+              items:
+                type: string
+      languages:
+        type: array
+        items:
+          type: object
+          properties:
+            languageNm: 
+              type: string
+            level: 
+              type: string
+            positionLanguage: 
+              type: number
+            positionLevel: 
+              type: number
