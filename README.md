@@ -1,9 +1,9 @@
 # Technologies stack
 
-# `NodeJS`
-# `MongoDB`
-# `Express`
-# `TypeScript`
+NodeJS
+MongoDB
+Express
+TypeScript
 
 ## MongoDB install
 The project uses MongoDB as a database. Install MongoDB from website https://www.mongodb.com/docs/manual
